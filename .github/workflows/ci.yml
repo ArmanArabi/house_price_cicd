@@ -1,0 +1,37 @@
+# workflow name
+name: house_price_estimator CI pipeline
+
+# when it starts? on push or pull_request to the main branch
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+# What should it do? (define the steps of the job)
+jobs:
+  build-and-test:
+    # define operating system
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: train the model (online training)
+        run: python model.py
+        
+      - name: Run tests with pytest
+        run: pytest
