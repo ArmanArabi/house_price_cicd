@@ -11,7 +11,7 @@ env:
 on:
   push:
     branches:
-      - main
+      - do-not-run-this-branch
 
   pull_request:
     branches:
