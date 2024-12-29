@@ -64,6 +64,6 @@ jobs:
 
       - name: build-and-push Docker image 
         run: |
-          docker build -t europe-west10-docker.pkg.dev/friendly-bazaar-446014-s8/flask-houseprice:latest 
+          docker build -t flask-houseprice:latest 
           gcloud auth configure-docker europe-west10-docker.pkg.dev
           docker push europe-west10-docker.pkg.dev/friendly-bazaar-446014-s8/flask-houseprice:latest
