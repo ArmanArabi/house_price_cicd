@@ -2,7 +2,9 @@ name: Deploy to Railway
 
 env:
   SERVICE_NAME: house_price_cicd
-  DOCKER_IMAGE_URL: registry.railway.app/${{ secrets.RAILWAY_PROJECT_ID }}/flask-app
+  RAILWAY_PROJECT_ID : 68d7ef90-ab72-4555-9f9d-53bb43c172c4
+  RAILWAY_TOKEN: 63802595-a219-43b1-b422-e0cadb5092eb
+  DOCKER_IMAGE_URL: registry.railway.app/68d7ef90-ab72-4555-9f9d-53bb43c172c4/flask-app
 
 on:
   push:
@@ -53,13 +55,12 @@ jobs:
       # Step 6: Deploy the project
       - name: Deploy to Railway
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_TOKEN: ${{ env.RAILWAY_TOKEN }}
         run: |
           railway up --service ${{ env.SERVICE_NAME }}
       
+
       - name: Build and deploy Docker image to Railway
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          docker build -t registry.railway.app/${{ secrets.RAILWAY_PROJECT_ID }}/flask-app .
-          docker push registry.railway.app/${{ secrets.RAILWAY_PROJECT_ID }}/flask-app
+          docker build -t registry.railway.app/${{ env.RAILWAY_PROJECT_ID }}/flask-app .
+          docker push registry.railway.app/${{ env.RAILWAY_PROJECT_ID }}/flask-app
