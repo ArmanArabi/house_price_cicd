@@ -1,13 +1,11 @@
 #1- workflow name
 name: house_price_estimator CI pipeline
 
-
-#5- define envirements to make connection between gcp and github
+#5- define environments to make connection between GCP and GitHub
 env:
   SERVICE_NAME: house_price_estimator
   PROJECT_ID: friendly-bazaar-446014-s8
   DOCKER_IMAGE_URL: europe-west10-docker.pkg.dev/friendly-bazaar-446014-s8/flask-houseprice:latest
-
 
 #2- when it starts? on push or pull_request to the main branch
 on:
@@ -39,7 +37,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       
-      - name: train the model (online training)
+      - name: Train the model (online training)
         run: python model.py
         
       - name: Run tests with pytest
@@ -47,23 +45,23 @@ jobs:
 
   #4- cd process
   deploy:
+    needs: build-and-test
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository or code
         uses: actions/checkout@v3
 
-      - name: Athenticate to GCP
+      - name: Authenticate to GCP
         uses: google-github-actions/auth@v1
         with:
-          credentials_json: ${{secrets.GCP_KEY_1}}
+          credentials_json: ${{ secrets.GCP_KEY_1 }}
 
       - name: Configure GCP project
-        run:
-          gcloud config set project friendly-bazaar-446014-s8
+        run: gcloud config set project ${{ env.PROJECT_ID }}
 
-      - name: build-and-push Docker image 
+      - name: Build and push Docker image
         run: |
-          docker build -t flask-houseprice:latest 
+          docker build -t ${{ env.DOCKER_IMAGE_URL }} .
           gcloud auth configure-docker europe-west10-docker.pkg.dev
-          docker push europe-west10-docker.pkg.dev/friendly-bazaar-446014-s8/flask-houseprice:latest
+          docker push ${{ env.DOCKER_IMAGE_URL }}
