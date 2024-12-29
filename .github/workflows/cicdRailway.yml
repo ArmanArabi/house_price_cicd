@@ -1,7 +1,7 @@
 name: Deploy to Railway
 
 env:
-  SERVICE_NAME: house_price_estimator
+  SERVICE_NAME: house_price_cicd
   DOCKER_IMAGE_URL: registry.railway.app/${{ secrets.RAILWAY_PROJECT_ID }}/flask-app
 
 on:
