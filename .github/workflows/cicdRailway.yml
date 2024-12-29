@@ -2,7 +2,6 @@ name: Deploy to Railway
 
 env:
   SERVICE_NAME: house_price_estimator
-  
   DOCKER_IMAGE_URL: registry.railway.app/${{ secrets.RAILWAY_PROJECT_ID }}/flask-app
 
 on:
@@ -48,15 +47,16 @@ jobs:
       - name: Install Railway CLI
         run: |
           curl -fsSL https://railway.app/install.sh | bash
-          export PATH="$HOME/.railway/bin:$PATH"
+          echo 'export PATH="$HOME/.railway/bin:$PATH"' >> $GITHUB_ENV
 
-      # Step 6: Authenticate to Railway
-      - name: Authenticate to Railway
-        run: railway login --token ${{ secrets.RAILWAY_TOKEN }}
 
-      # Step 7: Deploy the project
+      # Step 6: Deploy the project
       - name: Deploy to Railway
-        run: railway up
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+        run: |
+          railway up
       
       - name: Build and deploy Docker image to Railway
         run: |
