@@ -1,0 +1,56 @@
+name: Deploy to Railway
+
+env:
+  SERVICE_NAME: house_price_estimator
+  PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+  DOCKER_IMAGE_URL: registry.railway.app/${{ secrets.RAILWAY_PROJECT_ID }}/flask-app
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ## CI process
+  build-and-test:
+    # Define operating system
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Train the model
+        run: python model.py
+
+      - name: Run tests with pytest
+        run: pytest
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to Railway
+        uses: railwayapp/railway-deploy-action@v1
+        with:
+          project_id: ${{ secrets.RAILWAY_PROJECT_ID }}
+          railway_token: ${{ secrets.RAILWAY_TOKEN }}
+      
+      - name: Build and deploy Docker image to Railway
+        run: |
+          docker build -t registry.railway.app/${{ secrets.RAILWAY_PROJECT_ID }}/flask-app .
+          docker push registry.railway.app/${{ secrets.RAILWAY_PROJECT_ID }}/flask-app

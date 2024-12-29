@@ -15,7 +15,7 @@ on:
 
   pull_request:
     branches:
-      - main
+      - do-not-run-this-branch #main
 
 #3- What should it do? (define the steps of the job)
 jobs:
@@ -45,7 +45,7 @@ jobs:
 
   #4- cd process
   deploy:
-    needs: build-and-test
+    needs: build-and-test #in default both build and deploy process at same time. now one by one
     runs-on: ubuntu-latest
 
     steps:
