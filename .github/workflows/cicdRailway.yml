@@ -54,11 +54,12 @@ jobs:
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
         run: |
-          railway up
+          railway up --service ${{ env.SERVICE_NAME }}
       
       - name: Build and deploy Docker image to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           docker build -t registry.railway.app/${{ secrets.RAILWAY_PROJECT_ID }}/flask-app .
           docker push registry.railway.app/${{ secrets.RAILWAY_PROJECT_ID }}/flask-app
