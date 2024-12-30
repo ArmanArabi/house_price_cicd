@@ -1,9 +1,9 @@
 name: Deploy to Railway
 
 env:
-  SERVICE_NAME: house_price_cicd
-  RAILWAY_PROJECT_ID : 68d7ef90-ab72-4555-9f9d-53bb43c172c4
-  RAILWAY_TOKEN: 63802595-a219-43b1-b422-e0cadb5092eb
+  #SERVICE_NAME: house_price_cicd
+  #RAILWAY_PROJECT_ID : 68d7ef90-ab72-4555-9f9d-53bb43c172c4
+  #RAILWAY_TOKEN: 63802595-a219-43b1-b422-e0cadb5092eb
   DOCKER_IMAGE_URL: registry.railway.app/68d7ef90-ab72-4555-9f9d-53bb43c172c4/flask-app
 
 on:
@@ -45,22 +45,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 5: Install Railway CLI
+      # Step 5: Install Railway CLI(dont need)
       - name: Install Railway CLI
-        run: |
-          curl -fsSL https://railway.app/install.sh | bash
-          echo 'export PATH="$HOME/.railway/bin:$PATH"' >> $GITHUB_ENV
-
-
-      # Step 6: Deploy the project
-      - name: Deploy to Railway
-        env:
-          RAILWAY_TOKEN: ${{ env.RAILWAY_TOKEN }}
-        run: |
-          railway up --service ${{ env.SERVICE_NAME }}
-      
-
-      - name: Build and deploy Docker image to Railway
-        run: |
-          docker build -t registry.railway.app/${{ env.RAILWAY_PROJECT_ID }}/flask-app .
-          docker push registry.railway.app/${{ env.RAILWAY_PROJECT_ID }}/flask-app
+        run: npm install -g @railway/cli
